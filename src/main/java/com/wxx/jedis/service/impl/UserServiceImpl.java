@@ -1,6 +1,7 @@
 package com.wxx.jedis.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wxx.jedis.dao.UserMapper;
 import com.wxx.jedis.service.UserService;
 import com.wxx.jedis.domain.User;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,10 +22,11 @@ public class UserServiceImpl implements UserService{
 
     /**
      * 新增数据直接进入缓存
+     * CacheEvict,当新增数据时，清楚缓存
      *
      * */
     @Override
-    @Cacheable(value = "User",key = "'addUser'")
+    @CacheEvict(value = "User",key = "'getUser'",allEntries = true)
     public void addUser(User user){
         userMapper.addUser(user);
     }
@@ -34,7 +37,7 @@ public class UserServiceImpl implements UserService{
      *
      * */
     @Override
-    @Cacheable(value="User",key = "'getUser'")
+    @Cacheable(value="User",key = "'getUser'",condition = "#username == null or #username == ''")
     public List<User> getUser(String username) {
         return userMapper.getUser(username);
     }

@@ -149,7 +149,7 @@ public class RedisCacheConfig implements Cache{
      */
     @Override
     public void evict(Object key) {
-        System.out.println("del key");
+        logger.info("-----------------------------从缓存中删除 '" + key + "' key-----------------------------");
         final String keyf = key.toString();
         redisTemplate.execute((RedisCallback<Long>) connection -> connection.del(keyf.getBytes()));
     }
@@ -159,7 +159,7 @@ public class RedisCacheConfig implements Cache{
      */
     @Override
     public void clear() {
-        System.out.println("clear key");
+        logger.info("-----------------------------从缓存中清除所有key-----------------------------");
         redisTemplate.execute((RedisCallback<String>) connection -> {
             connection.flushDb();
             return "ok";
